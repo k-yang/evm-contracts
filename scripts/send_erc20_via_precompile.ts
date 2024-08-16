@@ -10,10 +10,11 @@ const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect
 Wallet.fromPhrase(mnemonic, jsonRpcProvider)
 
 const FunTokenGatewayAddress = "0x0000000000000000000000000000000000000800"
-const ERC20Address = "0x7D4B7B8CA7E1a24928Bb96D59249c7a5bd1DfBe6"
-const to = "nibi1gc6vpl9j0ty8tkt53787zps9ezc70kj88hluw4"
+const ERC20Address = "0x76e03400dC49dD3Dbede29f5e11b0e7bc215F202"
+const to = "nibi1zaavvzxez0elundtn32qnk9lkm8kmcsz44g7xl"
 
 async function main() {
+  console.log("owner address:", owner.address)
   const contract = IFunToken__factory.connect(FunTokenGatewayAddress, owner)
 
   const txResponse = await contract.bankSend(ERC20Address, 1, to)

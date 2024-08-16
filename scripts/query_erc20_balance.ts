@@ -15,18 +15,12 @@ const userAddress = "0xFAF227DAD0B91C2DEBD41DAE71C959EA4F95F8F8"
 async function main() {
   const contract = ERC20Minter__factory.connect(ERC20Address, owner)
 
-  const deploymentTx = contract.deploymentTransaction()
-  if (deploymentTx != null) {
-    console.log(deploymentTx)
-    jsonRpcProvider.getTransactionReceipt(deploymentTx.hash).then(console.log)
-  }
-
-  console.log(await contract.balanceOf(userAddress))
+  console.log("user balance:", await contract.balanceOf(userAddress))
   console.log("name:", await contract.name())
   console.log("symbol:", await contract.symbol())
   console.log("decimals:", await contract.decimals())
   console.log("totalSupply:", await contract.totalSupply())
-  console.log("owner:", await contract.owner())
+  console.log("owner address:", await contract.owner())
 }
 
 main()

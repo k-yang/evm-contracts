@@ -14,7 +14,14 @@ async function main() {
   const contract = await factory.deploy(owner, {
     gasPrice: "1",
   });
-  console.log(await contract.getAddress())
+  console.log("contract address: ", await contract.getAddress())
+  await contract.waitForDeployment()
+  
+  const deploymentTx = contract.deploymentTransaction()
+  if(deploymentTx != null) {
+    console.log(deploymentTx)
+    jsonRpcProvider.getTransactionReceipt(deploymentTx.hash).then(console.log)
+  }
 
   // obtain the total supply of the ERC-20 contract
   console.log("totalSupply: ", await contract.totalSupply())
