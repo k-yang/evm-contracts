@@ -10,8 +10,8 @@ const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect
 Wallet.fromPhrase(mnemonic, jsonRpcProvider)
 
 const FunTokenGatewayAddress = "0x0000000000000000000000000000000000000800"
-const ERC20Address = "0x76e03400dC49dD3Dbede29f5e11b0e7bc215F202"
-const to = "nibi1zaavvzxez0elundtn32qnk9lkm8kmcsz44g7xl"
+const ERC20Address = "0xe5F54D19AA5c3c16ba70bC1E5112Fe37F1764134"
+const to = "nibi1gc6vpl9j0ty8tkt53787zps9ezc70kj88hluw4"
 
 async function main() {
   console.log("owner address:", owner.address)
