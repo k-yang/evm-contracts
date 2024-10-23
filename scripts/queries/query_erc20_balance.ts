@@ -1,5 +1,5 @@
 import { HDNodeWallet, JsonRpcProvider, Wallet } from "ethers";
-import { ERC20Minter__factory } from "../typechain-types";
+import { ERC20Minter__factory } from "../../typechain-types";
 
 // connects to local node
 const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
@@ -10,7 +10,7 @@ const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/60'/0'/0/0").connect(
 Wallet.fromPhrase(mnemonic, jsonRpcProvider)
 
 const ERC20Address = "0x7D4B7B8CA7E1a24928Bb96D59249c7a5bd1DfBe6"
-const userAddress = "0xFAF227DAD0B91C2DEBD41DAE71C959EA4F95F8F8"
+const userAddress = "0xFfa7dFF969218b50492c05bF41Ca3583D5D16Bc8"
 
 async function main() {
   const contract = ERC20Minter__factory.connect(ERC20Address, owner)

@@ -15,14 +15,19 @@ contract DirtyStateAbuser {
 
     function attack(address erc20, string memory recipient) public {
         counter++;
-        FUNTOKEN_GATEWAY.bankSend(erc20, 1, recipient);
+        (bool _success, ) = FUNTOKEN_PRECOMPILE_ADDRESS.call(
+            abi.encodeWithSignature(
+                "bankSend(address,uint256,string)",
+                erc20,
+                1,
+                recipient
+            )
+        );
 
-        // require(
-        //     _success,
-        //     string.concat(
-        //         "Failed to call bankSend",
-        //         Strings.toHexString(uint256(uint160(precompile)), 20)
-        //     )
-        // );
+        require(_success, string.concat("Failed to call bankSend"));
+    }
+
+    function getCounter() public view returns (uint256) {
+        return counter;
     }
 }
