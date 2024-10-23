@@ -7,27 +7,28 @@ import "../IFunToken.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract DirtyStateAbuser {
-    uint256 public counter;
+    address erc20;
 
-    constructor() {
-        counter = 0;
+    constructor(address erc20_) {
+        erc20 = erc20_;
     }
 
-    function attack(address erc20, string memory recipient) public {
-        counter++;
-        (bool _success, ) = FUNTOKEN_PRECOMPILE_ADDRESS.call(
+    function attack(
+        address payable sendRecipient,
+        string memory bech32Recipient
+    ) public {
+        bool isSent = sendRecipient.send(10 ether); // 10 NIBI
+        require(isSent, "Failed to send ether");
+
+        (bool success, ) = FUNTOKEN_PRECOMPILE_ADDRESS.call(
             abi.encodeWithSignature(
                 "bankSend(address,uint256,string)",
                 erc20,
-                1,
-                recipient
+                uint256(10e6), // 10 WNIBI
+                bech32Recipient
             )
         );
 
-        require(_success, string.concat("Failed to call bankSend"));
-    }
-
-    function getCounter() public view returns (uint256) {
-        return counter;
+        require(success, string.concat("Failed to call bankSend"));
     }
 }
