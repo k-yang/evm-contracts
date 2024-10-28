@@ -27,7 +27,9 @@ async function main() {
   const txResponse = await wasmPrecompile.execute(COUNTER_ADDR, msgBz, [{
     amount: 10,
     denom: "unibi",
-  }]);
+  }], {
+    gasLimit: 3000000,
+  });
   console.log("tx: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("txReceipt: ", txReceipt)
