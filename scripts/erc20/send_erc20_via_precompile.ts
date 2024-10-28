@@ -1,5 +1,5 @@
 import { HDNodeWallet, JsonRpcProvider, Wallet } from "ethers";
-import { IFunToken__factory } from "../typechain-types";
+import { IFunToken__factory } from "../../typechain-types";
 
 // connects to local node
 const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
