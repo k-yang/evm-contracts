@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
-import "../IFunToken.sol";
+import "../Precompiles/IFunToken.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract DirtyStateAbuser {
