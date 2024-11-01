@@ -1,5 +1,5 @@
 import { HDNodeWallet, JsonRpcProvider } from "ethers";
-import { FunTokenBackConverter__factory } from "../../typechain-types";
+import { FungibleTokenConverter__factory } from "../../typechain-types";
 
 // connects to local node
 // const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.devnet-1.nibiru.fi:443");
@@ -14,7 +14,7 @@ const COMMAND_LINE_ARGS = process.argv.slice(2)
 const ERC20 = COMMAND_LINE_ARGS[0]
 
 async function main() {
-  const factory = new FunTokenBackConverter__factory(owner);
+  const factory = new FungibleTokenConverter__factory(owner);
   const contract = await factory.deploy(
     ERC20,
     {

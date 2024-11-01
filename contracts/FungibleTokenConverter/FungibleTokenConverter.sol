@@ -6,14 +6,14 @@ pragma solidity ^0.8.24;
 import "../Precompiles/IFunToken.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract FunTokenBackConverter {
+contract FungibleTokenConverter {
     address erc20;
 
     constructor(address erc20_) {
         erc20 = erc20_;
     }
 
-    function callPrecompile(string memory bech32Recipient) public {
+    function execute(string memory bech32Recipient) public {
         (bool success, ) = FUNTOKEN_PRECOMPILE_ADDRESS.call(
             abi.encodeWithSignature(
                 "bankSend(address,uint256,string)",
