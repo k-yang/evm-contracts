@@ -16,16 +16,26 @@ contract Scenario2 {
         bytes calldata msgArgs
     ) external returns (bytes memory) {
         IWasm.BankCoin[] memory funds = new IWasm.BankCoin[](0); // empty array
-        (bool success, bytes memory data) = WASM_PRECOMPILE_ADDRESS.call(
-            abi.encodeWithSignature(
-                "execute(string,bytes,BankCoin[])",
-                contractAddr,
-                msgArgs,
-                funds
-            )
-        );
-        require(success, "WASM execution failed");
 
-        return data;
+        bytes memory response = WASM_PRECOMPILE.execute(
+            contractAddr,
+            msgArgs,
+            funds
+        );
+
+        return response;
+
+        // (bool success, bytes memory data) = WASM_PRECOMPILE_ADDRESS.call(
+        //     abi.encodeWithSignature(
+        //         "execute(string,bytes,BankCoin[])",
+        //         contractAddr,
+        //         msgArgs,
+        //         funds
+        //     )
+        // );
+
+        // require(success, "WASM execution failed");
+
+        // return data;
     }
 }

@@ -1,5 +1,5 @@
 import { HDNodeWallet, JsonRpcProvider, toUtf8Bytes } from "ethers";
-import { DirtyStateAbuser4__factory } from "../../typechain-types";
+import { DirtyStateAbuser4__factory } from "../../../typechain-types";
 
 // connects to local node
 const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
@@ -24,8 +24,7 @@ async function main() {
   }));
 
   const txResponse = await contract.attack(wasmContract, msgBz, {
-    gasLimit: 9_000_864_030_308,
-    gasPrice: 1,
+    gasLimit: 200_000,
   })
   console.log("tx: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)

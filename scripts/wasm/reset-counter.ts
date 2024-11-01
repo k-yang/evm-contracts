@@ -17,17 +17,14 @@ async function main() {
   const wasmPrecompile = IWasm__factory.connect("0x0000000000000000000000000000000000000802", owner);
 
   const msgBz = toUtf8Bytes(JSON.stringify({
-    "bank_transfer": {
-      "recipient": "nibi1gc6vpl9j0ty8tkt53787zps9ezc70kj88hluw4",
-    }
+    "reset_counter": {}
   }));
 
-  const txResponse = await wasmPrecompile.execute(CONTRACT_ADDR, msgBz, [{
-    denom: "unibi",
-    amount: 1_000_000,
-  }], {
-    gasLimit: 3_000_000,
-  });
+  const txResponse = await wasmPrecompile.execute(CONTRACT_ADDR, msgBz, [],
+    {
+      gasLimit: 1e6,
+    }
+  );
   console.log("tx: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("txReceipt: ", txReceipt)
