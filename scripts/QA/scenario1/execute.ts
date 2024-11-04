@@ -18,7 +18,7 @@ async function main() {
   const contract = Scenario1__factory.connect(contractAddress, owner)
   console.log("contract address: ", await contract.getAddress())
 
-  const txResponse = await contract.attack(aliceHex, charlieBech32)
+  const txResponse = await contract.execute(aliceHex, charlieBech32)
   console.log("tx: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("txReceipt: ", txReceipt)
