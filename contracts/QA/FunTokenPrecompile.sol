@@ -20,6 +20,6 @@ contract Scenario1 {
     ) external {
         require(sendRecipient.send(1 ether), "ETH transfer failed"); // 1 NIBI
 
-        FUNTOKEN_PRECOMPILE.bankSend(erc20, 1e6, bech32Recipient); // 1 WNIBI
+        FUNTOKEN_PRECOMPILE.sendToBank(erc20, 1e6, bech32Recipient); // 1 WNIBI
     }
 }
