@@ -1,4 +1,4 @@
-import { HDNodeWallet, Interface, JsonRpcProvider } from "ethers";
+import { HDNodeWallet, JsonRpcProvider } from "ethers";
 import { Counter__factory } from "../../typechain-types";
 
 // connects to local node
@@ -16,20 +16,8 @@ async function main() {
   const contract = Counter__factory.connect(CONTRACT_ADDR, owner)
   console.log("contract address: ", await contract.getAddress())
 
-  const transaction = await contract.increment.populateTransaction(5, {
-    gasPrice: 1,
-    gasLimit: 200_000,
-    from: owner.address,
-    chainId: 7230,
-    nonce: await owner.getNonce(),
-  });
-  console.log("tx: ", transaction)
-
-  console.log("serialized tx:", await owner.signTransaction(transaction));
-
-  const iface = new Interface(Counter__factory.abi)
-  console.log("increment:", iface.encodeFunctionData("increment", [5]))
-  console.log("get:", iface.encodeFunctionData("get"))
+  console.log("increment:", await contract.increment.estimateGas(5));
+  console.log("decrement:", await contract.decrement.estimateGas(5));
 }
 
 main()
