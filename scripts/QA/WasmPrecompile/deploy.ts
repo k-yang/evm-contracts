@@ -1,5 +1,5 @@
 import { HDNodeWallet, JsonRpcProvider } from "ethers";
-import { Scenario3__factory } from "../../../typechain-types";
+import { WasmPrecompile__factory } from "../../../typechain-types";
 
 // connects to local node
 // const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.devnet-1.nibiru.fi:443");
@@ -10,11 +10,11 @@ const mnemonic = "guard cream sadness conduct invite crumble clock pudding hole 
 const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect(jsonRpcProvider)
 
 async function main() {
-  const factory = new Scenario3__factory(owner);
+  const factory = new WasmPrecompile__factory(owner);
   const contract = await factory.deploy(
     {
       gasPrice: "1",
-      value: "1000000000000000000" // 1 NIBI (ether)
+      value: "10000000000000000000" // 10 ether
     });
 
   console.log("contract address: ", await contract.getAddress())

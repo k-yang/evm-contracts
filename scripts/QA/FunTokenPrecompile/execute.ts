@@ -1,5 +1,5 @@
-import { HDNodeWallet, JsonRpcProvider, toUtf8Bytes } from "ethers";
-import { Scenario2__factory } from "../../../typechain-types";
+import { HDNodeWallet, JsonRpcProvider } from "ethers";
+import { FunTokenPrecompile__factory } from "../../../typechain-types";
 
 // connects to local node
 const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
@@ -10,23 +10,15 @@ const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect
 
 // get command line arguments
 const COMMAND_LINE_ARGS = process.argv.slice(2)
-const CONTRACT_ADDR = COMMAND_LINE_ARGS[0]
-const COUNTER_ADDR = COMMAND_LINE_ARGS[1]
+const contractAddress = COMMAND_LINE_ARGS[0]
+const aliceHex = COMMAND_LINE_ARGS[1]
+const charlieBech32 = COMMAND_LINE_ARGS[2]
 
 async function main() {
-  const contract = Scenario2__factory.connect(CONTRACT_ADDR, owner)
+  const contract = FunTokenPrecompile__factory.connect(contractAddress, owner)
   console.log("contract address: ", await contract.getAddress())
 
-  const msgBz = toUtf8Bytes(JSON.stringify({
-    "increment_counter": {
-      "by": 5,
-    }
-  }));
-  console.log(msgBz)
-
-  const txResponse = await contract.execute(COUNTER_ADDR, msgBz, {
-    gasLimit: 200_000,
-  });
+  const txResponse = await contract.execute(aliceHex, charlieBech32)
   console.log("tx: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("txReceipt: ", txReceipt)
