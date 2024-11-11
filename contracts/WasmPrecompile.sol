@@ -14,11 +14,7 @@ contract WasmPrecompile {
     ) external returns (bytes memory) {
         IWasm.BankCoin[] memory funds = new IWasm.BankCoin[](0);
 
-        return = WASM_PRECOMPILE.execute(
-            contractAddr,
-            msgArgs,
-            funds
-        );
+        return WASM_PRECOMPILE.execute(contractAddr, msgArgs, funds);
     }
 
     function executeWithFunds(
@@ -28,10 +24,6 @@ contract WasmPrecompile {
         IWasm.BankCoin[] memory funds = new IWasm.BankCoin[](1);
         funds[0] = IWasm.BankCoin({denom: "unibi", amount: 1e6}); // 1 NIBI
 
-        return WASM_PRECOMPILE.execute(
-            contractAddr,
-            msgArgs,
-            funds
-        );
+        return WASM_PRECOMPILE.execute(contractAddr, msgArgs, funds);
     }
 }
