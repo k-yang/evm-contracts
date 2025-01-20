@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.22;
+pragma solidity >=0.7.0 <0.9.0;
 
 import "./lib/Context.sol";
 import "./lib/SafeMath.sol";
@@ -16,11 +16,6 @@ abstract contract TRC721 is Context, TRC165, ITRC721 {
     using Address for address;
     using Counters for Counters.Counter;
 
-    // Equals to `bytes4(keccak256("onTRC721Received(address,address,uint256,bytes)"))`
-    // which can be also obtained as `ITRC721Receiver(0).onTRC721Received.selector`
-    //
-    // NOTE: TRC721 uses 0x150b7a02, TRC721 uses 0x5175f878.
-    bytes4 private constant _TRC721_RECEIVED = 0x5175f878;
 
     // Mapping from token ID to owner
     mapping (uint256 => address) private _tokenOwner;
