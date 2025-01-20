@@ -11,13 +11,17 @@ const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.testnet-1.nibiru.fi
 const mnemonic = "false autumn antique duty found siege balance truth recycle neutral doctor budget ship heart shoe coconut home spoon wide guilt slush skirt garment regular"
 const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect(jsonRpcProvider)
 
+const COMMAND_LINE_ARGS = process.argv.slice(2);
+const CONTRACT_ADDR = COMMAND_LINE_ARGS[0];
+
 async function main() {
-  console.log("owner address: ", owner.address);
-  console.log("owner balance: ", await jsonRpcProvider.getBalance(owner.address))
-  const factory = new Counter__factory(owner);
-  const contract = await factory.deploy();
-  console.log("ERC20 contract address: ", await contract.getAddress())
-  await contract.waitForDeployment()
+  const contract = Counter__factory.connect(CONTRACT_ADDR, owner)
+  console.log("contract address: ", await contract.getAddress())
+
+  while (true) {
+    console.log("increment:", await contract.increment.estimateGas(5));
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
 }
 
 main()
