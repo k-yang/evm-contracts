@@ -12,7 +12,7 @@ contract DirtyStateAbuser5 {
 
     function attack(string calldata wasmAddr, bytes calldata msgArgs) external {
         IWasm.BankCoin[] memory funds = new IWasm.BankCoin[](1);
-        funds[0] = IWasm.BankCoin({denom: "unibi", amount: 5_000_000}); // 5 NIBI
+        funds[0] = IWasm.BankCoin({denom: "unibi", amount: 5e6}); // 5 NIBI
 
         WASM_PRECOMPILE.execute(wasmAddr, msgArgs, funds);
     }

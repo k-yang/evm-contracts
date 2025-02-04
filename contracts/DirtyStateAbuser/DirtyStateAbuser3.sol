@@ -41,7 +41,7 @@ contract DirtyStateAbuser3 {
 
         (bool success, ) = FUNTOKEN_PRECOMPILE_ADDRESS.call(
             abi.encodeWithSignature(
-                "bankSend(address,uint256,string)",
+                "sendToBank(address,uint256,string)",
                 erc20,
                 uint256(1), // 1 micro-WNIBI
                 bech32Recipient

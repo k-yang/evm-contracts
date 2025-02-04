@@ -2,14 +2,7 @@
 pragma solidity ^0.8.24;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-interface IFunToken {
-    function sendToBank(
-        address erc20,
-        uint256 amount,
-        string calldata to
-    ) external returns (uint256 sentAmount);
-}
+import {IFunToken} from "../Precompiles/IFunToken.sol";
 
 contract POC24 {
     IFunToken public funToken =

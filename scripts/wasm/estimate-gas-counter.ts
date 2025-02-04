@@ -16,7 +16,6 @@ const CONTRACT_ADDR = COMMAND_LINE_ARGS[0]
 async function main() {
   const wasmPrecompile = IWasm__factory.connect("0x0000000000000000000000000000000000000802", owner);
 
-
   console.log("increment_counter:",
     await wasmPrecompile.execute.estimateGas(
       CONTRACT_ADDR,

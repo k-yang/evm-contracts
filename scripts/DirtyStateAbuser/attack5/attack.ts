@@ -1,4 +1,4 @@
-import { HDNodeWallet, JsonRpcProvider, toUtf8Bytes } from "ethers";
+import { HDNodeWallet, JsonRpcProvider, parseEther, toUtf8Bytes } from "ethers";
 import { DirtyStateAbuser5__factory } from "../../../typechain-types";
 
 // connects to local node
@@ -16,18 +16,20 @@ async function main() {
   const factory = new DirtyStateAbuser5__factory(owner);
   const contract = await factory.deploy(
     {
-      value: "10000000000000000000" // 10 NIBI
+      value: parseEther("10") // 10 NIBI
     });
 
   console.log("contract address: ", await contract.getAddress())
   await contract.waitForDeployment()
 
   const msgBz = toUtf8Bytes(JSON.stringify({
-    "run": {},
+    "run": {
+      "validator": "nibivaloper1zaavvzxez0elundtn32qnk9lkm8kmcszuwx9jz"
+    },
   }));
 
   const txResponse = await contract.attack(wasmContract, msgBz)
-  console.log("tx: ", txResponse)
+  console.log("txResponse: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("txReceipt: ", txReceipt)
 }

