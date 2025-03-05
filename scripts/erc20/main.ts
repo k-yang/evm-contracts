@@ -2,8 +2,9 @@ import { HDNodeWallet, JsonRpcProvider } from "ethers";
 import { IFunToken__factory, MyToken__factory } from "../../typechain-types";
 
 // connects to local node
-// const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.devnet-1.nibiru.fi:443");
-const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
+const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.testnet-2.nibiru.fi:443");
+// const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.nibiru.fi:443");
+// const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
 const FunTokenGatewayAddress = "0x0000000000000000000000000000000000000800"
 
 // mnemonic for the HD wallet
@@ -25,24 +26,47 @@ async function main() {
   console.log("totalSupply: ", await erc20.totalSupply())
   console.log("balanceOf(owner): ", await erc20.balanceOf(owner.address))
 
-  // transfer 100 tokens to another address
-  const txResponse = await erc20.transfer(recipient.address, 100)
-  console.log("txResponse: ", txResponse)
-  const receipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
-  console.log("receipt: ", receipt)
+  // internal transfer
+  {
+    const txResponse = await erc20.transfer(recipient.address, 100)
+    console.log("txResponse: ", txResponse)
+    const receipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
+    console.log("receipt: ", receipt)
 
-  console.log("balanceOf(recipient): ", await erc20.balanceOf(recipient.address))
-  console.log("balanceOf(owner): ", await erc20.balanceOf(owner.address))
+    console.log("balanceOf(recipient): ", await erc20.balanceOf(recipient.address))
+    console.log("balanceOf(owner): ", await erc20.balanceOf(owner.address))
+  }
 
-  // sendToBank
-  const funtoken = IFunToken__factory.connect(FunTokenGatewayAddress, owner)
-  const txResponse2 = await funtoken.sendToBank(erc20Addr, 1, "nibi1gc6vpl9j0ty8tkt53787zps9ezc70kj88hluw4")
-  console.log("txResponse2: ", txResponse2)
-  const receipt2 = await jsonRpcProvider.waitForTransaction(txResponse2.hash)
-  console.log("receipt: ", receipt2)
+  {
+    // sendToBank
+    const funtokenPrecompile = IFunToken__factory.connect(FunTokenGatewayAddress, owner)
 
-  console.log("balanceOf(owner): ", await erc20.balanceOf(owner.address))
-  console.log("balanceOf(recipient): ", await funtoken.bankBalance("nibi1gc6vpl9j0ty8tkt53787zps9ezc70kj88hluw4", "erc20/" + erc20Addr))
+    const txResponse = await funtokenPrecompile.sendToBank(erc20Addr, 50, "nibi1ltez0kkshywzm675rkh8rj2eaf8et78cqjqrhc")
+    console.log("txResponse: ", txResponse)
+    const receipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
+    console.log("receipt: ", receipt)
+
+    console.log("balanceOf(recipient): ", await funtokenPrecompile.bankBalance(owner.address, "erc20/" + erc20Addr))
+    console.log("balanceOf(owner): ", await erc20.balanceOf(owner.address))
+  }
+
+  // sendToEvm
+  {
+    const funtokenPrecompile = IFunToken__factory.connect(FunTokenGatewayAddress, owner)
+
+    const txResponse = await funtokenPrecompile.sendToEvm("erc20/" + erc20Addr, 50, owner.address)
+    console.log("txResponse: ", txResponse)
+    const receipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
+    console.log("receipt: ", receipt)
+
+    console.log("balanceOf(recipient): ", await funtokenPrecompile.bankBalance(owner.address, "erc20/" + erc20Addr))
+    console.log("balanceOf(owner): ", await erc20.balanceOf(owner.address))
+  }
 }
 
 main()
+
+// Helper function to create a delay
+function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
