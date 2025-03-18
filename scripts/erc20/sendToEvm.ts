@@ -1,9 +1,10 @@
 import { HDNodeWallet, JsonRpcProvider } from "ethers";
-import { IFunToken__factory, MyToken__factory } from "../../typechain-types";
+import { ERC20Minter__factory, IFunToken__factory } from "../../typechain-types";
 
 // connects to local node
-const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
+// const jsonRpcProvider = new JsonRpcProvider("http://localhost:8545");
 // const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.nibiru.fi:443");
+const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.testnet-2.nibiru.fi:443");
 
 // mnemonic for the HD wallet
 const mnemonic = "guard cream sadness conduct invite crumble clock pudding hole grit liar hotel maid produce squeeze return argue turtle know drive eight casino maze host"
@@ -23,9 +24,10 @@ async function main() {
   const receipt = await jsonRpcProvider.waitForTransaction(txResponse.hash)
   console.log("receipt: ", receipt)
 
-  console.log("balanceOf(recipient): ", await funtokenPrecompile.bankBalance("0xFaF227daD0b91C2dEBD41daE71C959EA4f95f8F8", bankDenom))
-  const erc20 = MyToken__factory.connect(ERC20Address, owner)
-  console.log("balanceOf(owner): ", await erc20.balanceOf(owner.address))
+  console.log("owner unibi balance in wei: ", await funtokenPrecompile.bankBalance(owner.address, bankDenom))
+
+  const erc20 = ERC20Minter__factory.connect(ERC20Address, owner)
+  console.log("owner WNIBI balance: ", await erc20.balanceOf(owner.address))
 }
 
 main()

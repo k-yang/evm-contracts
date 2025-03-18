@@ -9,13 +9,14 @@ const mnemonic = "guard cream sadness conduct invite crumble clock pudding hole 
 const owner = HDNodeWallet.fromPhrase(mnemonic, "", "m/44'/118'/0'/0/0").connect(jsonRpcProvider)
 Wallet.fromPhrase(mnemonic, jsonRpcProvider)
 
+console.log("owner address:", owner.address)
+
 const FunTokenGatewayAddress = "0x0000000000000000000000000000000000000800"
 const ERC20Address = "0x76e03400dC49dD3Dbede29f5e11b0e7bc215F202"
 const bankDenom = "erc20/" + ERC20Address
 const recipient = "nibi1ltez0kkshywzm675rkh8rj2eaf8et78cqjqrhc"
 
 async function main() {
-  console.log("owner address:", owner.address)
   const funtokenPrecompile = IFunToken__factory.connect(FunTokenGatewayAddress, owner)
 
   const txResponse = await funtokenPrecompile.sendToBank(ERC20Address, 1, recipient)

@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 // Uncomment this line to use console.log
 // import "hardhat/console.sol";
-import "../Precompiles/IFunToken.sol";
+import "./IFunToken.sol";
 
 contract FunTokenPrecompile {
     address erc20;
