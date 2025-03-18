@@ -1,5 +1,5 @@
 import { HDNodeWallet, JsonRpcProvider, toUtf8Bytes } from "ethers";
-import { IWasm__factory } from "../../typechain-types";
+import { IWasm__factory } from "../../../typechain-types";
 
 // connects to local node
 // const jsonRpcProvider = new JsonRpcProvider("https://evm-rpc.devnet-1.nibiru.fi:443");
