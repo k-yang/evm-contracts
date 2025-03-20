@@ -13,8 +13,13 @@ contract WNIBI9 {
     string public symbol = "WNIBI";
     uint8 public decimals = 6;
 
+    event Approval(address indexed src, address indexed guy, uint wad);
+    event Transfer(address indexed src, address indexed dst, uint wad);
     event Deposit(address indexed dst, uint wad);
     event Withdrawal(address indexed src, uint wad);
+
+    mapping(address => uint) public balanceOf;
+    mapping(address => mapping(address => uint)) public allowance;
 
     address canonicalContract;
     string bankDenom;
@@ -33,25 +38,35 @@ contract WNIBI9 {
         deposit();
     }
 
+    // convert unibi to ERC20 representation via fungible token mapping
     function deposit() public payable {
-        // convert unibi to ERC20 representation via fungible token mapping
+        // need to divide by a scaling factor to obtain unibi amount from wei amount
+        uint256 scalingFactor = 10 ** (18 - decimals);
+        uint256 unibiAmount = msg.value / scalingFactor;
+
         FUNTOKEN_PRECOMPILE.sendToEvm(
             bankDenom,
-            msg.value,
-            Strings.toHexString(uint256(uint160(msg.sender)), 20)
+            unibiAmount,
+            Strings.toHexString(uint256(uint160(address(this))), 20)
         );
+
+        balanceOf[msg.sender] += unibiAmount;
 
         emit Deposit(msg.sender, msg.value);
     }
 
-    function withdraw(uint wad) public {
-        // convert back to unibi
-        // TODO: need to figure out how to convert msg.sender into a bech32
+    // convert back to unibi
+    function withdraw(uint256 wad) public {
+        require(balanceOf[msg.sender] >= wad);
+        balanceOf[msg.sender] -= wad;
+
         FUNTOKEN_PRECOMPILE.sendToBank(
             canonicalContract,
             wad,
-            Strings.toHexString(uint256(uint160(msg.sender)), 20)
+            Strings.toHexString(uint256(uint160(address(this))), 20)
         );
+
+        payable(msg.sender).transfer(wad);
 
         emit Withdrawal(msg.sender, wad);
     }
@@ -62,14 +77,7 @@ contract WNIBI9 {
      * @dev Returns the value of tokens in existence.
      */
     function totalSupply() external view returns (uint256) {
-        return IERC20(canonicalContract).totalSupply();
-    }
-
-    /**
-     * @dev Returns the value of tokens owned by `account`.
-     */
-    function balanceOf(address account) external view returns (uint256) {
-        return IERC20(canonicalContract).balanceOf(account);
+        return IERC20(canonicalContract).balanceOf(address(this));
     }
 
     /**
@@ -79,22 +87,8 @@ contract WNIBI9 {
      *
      * Emits a {Transfer} event.
      */
-    function transfer(address to, uint256 value) external returns (bool) {
-        return IERC20(canonicalContract).transfer(to, value);
-    }
-
-    /**
-     * @dev Returns the remaining number of tokens that `spender` will be
-     * allowed to spend on behalf of `owner` through {transferFrom}. This is
-     * zero by default.
-     *
-     * This value changes when {approve} or {transferFrom} are called.
-     */
-    function allowance(
-        address owner,
-        address spender
-    ) external view returns (uint256) {
-        return IERC20(canonicalContract).allowance(owner, spender);
+    function transfer(address dst, uint wad) public returns (bool) {
+        return transferFrom(msg.sender, dst, wad);
     }
 
     /**
@@ -112,8 +106,10 @@ contract WNIBI9 {
      *
      * Emits an {Approval} event.
      */
-    function approve(address spender, uint256 value) external returns (bool) {
-        return IERC20(canonicalContract).approve(spender, value);
+    function approve(address guy, uint wad) public returns (bool) {
+        allowance[msg.sender][guy] = wad;
+        emit Approval(msg.sender, guy, wad);
+        return true;
     }
 
     /**
@@ -126,10 +122,22 @@ contract WNIBI9 {
      * Emits a {Transfer} event.
      */
     function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool) {
-        return IERC20(canonicalContract).transferFrom(from, to, value);
+        address src,
+        address dst,
+        uint wad
+    ) public returns (bool) {
+        require(balanceOf[src] >= wad);
+
+        if (src != msg.sender && allowance[src][msg.sender] != type(uint).max) {
+            require(allowance[src][msg.sender] >= wad);
+            allowance[src][msg.sender] -= wad;
+        }
+
+        balanceOf[src] -= wad;
+        balanceOf[dst] += wad;
+
+        emit Transfer(src, dst, wad);
+
+        return true;
     }
 }
