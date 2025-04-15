@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.19;
 
-import "./Precompiles/IOracle.sol";
+import "../Precompiles/IOracle.sol";
 
 /// @title NibiruOracleChainLinkLike
 /// @notice This contract serves as a ChainLink-like data feed that sources its
