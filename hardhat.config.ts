@@ -2,7 +2,16 @@ import "@nomicfoundation/hardhat-toolbox";
 import { HardhatUserConfig } from "hardhat/config";
 
 const config: HardhatUserConfig = {
-  solidity: "0.8.24",
+  solidity: {
+    compilers: [
+      {
+        version: "0.8.24",
+      },
+      {
+        version: "0.7.6",
+      },
+    ],
+  },
   networks: {
     nibiru: {
       url: "http://localhost:8545",
