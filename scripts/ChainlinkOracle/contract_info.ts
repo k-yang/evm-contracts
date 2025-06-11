@@ -10,9 +10,10 @@ const ethUsd = "0x0a713B47d49944908a983F5a42bF743b590137BE";
 const btcUsd = "0x445Ca1db886ED3f08b8957e0581c25AfC6f48081";
 const usdcUsd = "0x22A1eBBe1282d9E4EC64FedF71826E1faD056Eb1";
 const usdtUsd = "0x86C6814Aa44fA22f7B9e0FCEC6F9de6012F322f8";
+const stNibiUsd = "0xA04F8c3F81EBDc97535C6d328ABb036E0D8D0A69";
 
 async function main() {
-  const contract = ChainLinkAggregatorV3Interface__factory.connect(usdtUsd, jsonRpcProvider)
+  const contract = ChainLinkAggregatorV3Interface__factory.connect(stNibiUsd, jsonRpcProvider)
   console.log("contract address: ", await contract.getAddress())
 
   console.log("decimals: ", await contract.decimals())

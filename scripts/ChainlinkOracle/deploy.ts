@@ -13,7 +13,7 @@ console.log("owner address:", owner.address)
 
 async function main() {
   const factory = new NibiruOracleChainLinkLike__factory(owner);
-  const contract = await factory.deploy("uusdt:uusd", 8, {
+  const contract = await factory.deploy("ustnibi:uusd", 8, {
     gasPrice: "1",
   });
   const addr = await contract.getAddress()
